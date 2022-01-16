@@ -70,7 +70,7 @@ public class EthernetPacketParser {
 		// and hence I want objects of this class to be independent and not
 		// rely on any form of outside data after the constructor is run. Hence,
 		// internal copies of the payload is made.
-		if (hasVtag()) {
+		if (vlan()) {
 			payload = Arrays.copyOfRange(data, 18, data.length);
 		} else {
 			payload = Arrays.copyOfRange(data, 14, data.length);
@@ -85,7 +85,7 @@ public class EthernetPacketParser {
 		return srcMac;
 	}
 
-	public boolean hasVtag() {
+	public boolean vlan() {
 		return et.value() == 0x8100;
 	}
 
@@ -105,7 +105,9 @@ public class EthernetPacketParser {
 	}
 
 	public byte[] payload() {
-		return this.payload;
+		// arrays are by reference in Java. send a copy so outside changes
+		// to the byte array dont affect internal data;
+		return Arrays.copyOfRange(this.payload, 0, this.payload.length);
 	}
 
 	public String ethertypeLabel() {
