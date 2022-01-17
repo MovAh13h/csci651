@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 // https://en.wikipedia.org/wiki/EtherType
 // https://en.wikipedia.org/wiki/IEEE_802.1Q
-public class EthernetPacketParser {
+public class EthernetPacket {
 	// destination MAC address
 	private String destMac = "";
 
@@ -20,7 +20,7 @@ public class EthernetPacketParser {
 	// payload of the packet
 	private byte[] payload;
 
-	EthernetPacketParser(byte[] data) throws Exception {
+	EthernetPacket(byte[] data) throws Exception {
 		// parse dest mac address
 		for (int i = 0; i < 6; i++) {
 			if (i < 5) {
@@ -106,7 +106,7 @@ public class EthernetPacketParser {
 
 	public byte[] payload() {
 		// arrays are by reference in Java. send a copy so outside changes
-		// to the byte array dont affect internal data;
+		// to the byte array dont affect internal data
 		return Arrays.copyOfRange(this.payload, 0, this.payload.length);
 	}
 

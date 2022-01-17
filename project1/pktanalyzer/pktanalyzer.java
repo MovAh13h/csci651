@@ -22,9 +22,24 @@ public class pktanalyzer {
 		try {
 			byte[] packet_data = Files.readAllBytes(packet_file.toPath());
 			 
-			EthernetPacketParser epp = new EthernetPacketParser(packet_data);
+			EthernetPacket epp = new EthernetPacket(packet_data);
 
-			System.out.println(epp);
+			System.out.print(epp);
+
+			// check if its an IP
+			if (epp.ethertypeLabel() == "IP") { 
+				InternetProtocolV4Packet ippp
+					= new InternetProtocolV4Packet(epp.payload());
+
+				System.out.print(ippp);
+
+				// check if UDP
+				if (ippp.protocolLabel() == "UDP") {
+					UserDatagramProtocolPacket udpp = new UserDatagramProtocolPacket(ippp.payload());
+
+					System.out.println(udpp);
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
