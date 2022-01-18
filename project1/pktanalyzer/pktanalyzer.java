@@ -33,11 +33,21 @@ public class pktanalyzer {
 
 				System.out.print(ippp);
 
+				byte[] ipv4Payload = ippp.payload();
+
 				// check if UDP
 				if (ippp.protocolLabel() == "UDP") {
-					UserDatagramProtocolPacket udpp = new UserDatagramProtocolPacket(ippp.payload());
+					UserDatagramProtocolPacket udpp = new UserDatagramProtocolPacket(ipv4Payload);
 
 					System.out.println(udpp);
+				} else if (ippp.protocolLabel() == "TCP") {
+					// check if TCP
+					TransmissionControlProtocolPacket tcpp = new
+						TransmissionControlProtocolPacket(ipv4Payload);
+
+					System.out.println(tcpp);
+				} else if (ippp.protocolLabel() == "ICMP") {
+					// if ICMP packet
 				}
 			}
 		} catch (Exception e) {

@@ -42,14 +42,14 @@ public class EthernetPacket {
 		// check if the 17-18th bytes are 0x8100 for VTAG
 		int value = 0, length = 0;
 		value = data[16] & 0xff;
-		value = (value << 8) + (data[17] & 0xff);
+		value = (value << 8) | data[17] & 0xff;
 
 		if (value != 0x8100) {
 			// VTAG is not present
 			// if VTAG is not present
 			// bytes 12-13 are the EtherType/Size followed by the payload
 			length = data[12] & 0xff;
-			length = (length << 8) + (data[13] & 0xff);
+			length = (length << 8) | (data[13] & 0xff);
 		} else {
 			// VTAG is present
 			// if VTAG is present, bytes 12-15 are the VTAG data and byte 16-17
@@ -69,7 +69,7 @@ public class EthernetPacket {
 		// Note: This class might get turned into a package of its own later on
 		// and hence I want objects of this class to be independent and not
 		// rely on any form of outside data after the constructor is run. Hence,
-		// internal copies of the payload is made.
+		// internal copy of the payload is made.
 		if (vlan()) {
 			payload = Arrays.copyOfRange(data, 18, data.length);
 		} else {

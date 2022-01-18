@@ -69,9 +69,9 @@ public class InternetProtocolV4Packet {
 		// total length is 2 bytes. so first byte has to come 8 towards left
 		// + its 8 bits resulting in a 16 bits. we mask the sign bit to remove
 		// +/-
-		totalLength = ((data[2] & 0xff) << 8) + (data[3] & 0xff); // ok
+		totalLength = ((data[2] & 0xff) << 8) | (data[3] & 0xff); // ok
 
-		identification = ((data[4] & 0xff) << 8) + (data[5] & 0xff); // ok
+		identification = ((data[4] & 0xff) << 8) | (data[5] & 0xff); // ok
 		
 		// if flag is first 3 MSBs then it should be right shifted 5 times
 		// to bring those bits to LSBs but >> 5 gets me incorrect answer
@@ -79,7 +79,7 @@ public class InternetProtocolV4Packet {
 		flags      = (data[6] & 0xff & 0b11100000); // not ok
 
 		// ok
-		flagOffset = ((data[6] & 0xff & 0b00011111) << 5) + (data[7] & 0xff);
+		flagOffset = ((data[6] & 0xff & 0b00011111) << 5) | data[7] & 0xff;
 
 		// Note: masking needed here?
 		ttl = data[8] & 0xff;
@@ -87,7 +87,7 @@ public class InternetProtocolV4Packet {
 
 		handleProtocolLabel(protocol);
 
-		headerChecksum = ((data[10] & 0xff) << 8) + (data[11] & 0xff);
+		headerChecksum = ((data[10] & 0xff) << 8) | data[11] & 0xff;
 
 		// parse src ip
 		srcIp += (data[12] & 0xff) + ".";
@@ -187,6 +187,7 @@ public class InternetProtocolV4Packet {
 			sb.append("IP:       ..1. .... = more fragment\n");
 		}
 
+		// TODO: this
 		sb.append("IP: Fragment offset = " + " bytes\n");
 		sb.append("IP: Time to live = " + ttl() + " seconds/hops\n");
 		sb.append("IP: Protocol = " + protocol() + " ("
