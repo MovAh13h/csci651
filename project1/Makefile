@@ -1,7 +1,7 @@
 .PHONY: build run
 
 run: clean build
-	@java pktanalyzer/pktanalyzer pkt/new_tcp_packet1.bin
+	@java pktanalyzer/pktanalyzer pkt/icmp2a.bin
 
 build:
 	@javac pktanalyzer/pktanalyzer.java

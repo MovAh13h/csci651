@@ -187,13 +187,12 @@ public class InternetProtocolV4Packet {
 			sb.append("IP:       ..1. .... = more fragment\n");
 		}
 
-		// TODO: this
-		sb.append("IP: Fragment offset = " + " bytes\n");
+		sb.append("IP: Fragment offset = " + flagOffset() + " bytes\n");
 		sb.append("IP: Time to live = " + ttl() + " seconds/hops\n");
 		sb.append("IP: Protocol = " + protocol() + " ("
 			+ protocolLabel() + ")\n");
 		sb.append("IP: Header checksum = 0x"
-			+ Integer.toHexString(headerChecksum()) + "\n");
+			+ String.format("%04x\n", headerChecksum()));
 		sb.append("IP: Source address = " + sourceIP() + "\n");
 		sb.append("IP: Destination address = " + destIP() + "\n");
 

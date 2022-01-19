@@ -47,7 +47,12 @@ public class pktanalyzer {
 
 					System.out.println(tcpp);
 				} else if (ippp.protocolLabel() == "ICMP") {
-					// if ICMP packet
+					InternetControlMessageProtocolPacket icmpp = new
+					InternetControlMessageProtocolPacket(ipv4Payload);
+
+					System.out.println(icmpp);
+				} else {
+					System.out.println("Unhandled Data type inside IPv4");
 				}
 			}
 		} catch (Exception e) {

@@ -24,7 +24,8 @@ public class HexDump {
 
 			if (((i + 1) % 16 == 0) || (i == data.length - 1)) {
 				hex.add(String.format("%-39s", sbh.toString()));
-				dump.add(String.format("%-16s", sbd.toString()).replace(' ', '.'));
+				dump.add(String.format("%-16s", sbd.toString())
+					.replace(' ', '.'));
 
 				sbh.delete(0, sbh.length());
 				sbd.delete(0, sbd.length());

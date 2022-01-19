@@ -21,30 +21,9 @@ public class TransmissionControlProtocolPacket {
 
 	// ECN-nonce - concealment protection
 	private boolean nsr = false;
-	
-	// Congestion window reduced
-	private boolean cwr = false;
 
-	// ECN-Echo
-	private boolean ece = false;
-
-	// Urgent pointer field is significant
-	private boolean urg = false;
-
-	// Indicates that the Acknowledgment field is significant
-	private boolean ack = false;
-
-	// Push function
-	private boolean psh = false;
-	
-	// Reset the connection
-	private boolean rst = false;
-	
-	// Synchronize sequence numbers
-	private boolean syn = false;
-
-	// Last packet from sender
-	private boolean fin = false;
+	// flag
+	private byte flags;
 
 	// window size
 	private Integer windowSize;
@@ -66,10 +45,10 @@ public class TransmissionControlProtocolPacket {
 
 	TransmissionControlProtocolPacket(byte[] data) throws Exception {
 		// parse source port
-		sourcePort = ((data[0] & 0xff) << 8) + (data[1] & 0xff);
+		sourcePort = ((data[0] & 0xff) << 8) | data[1] & 0xff;
 		
 		// parse dest port
-		destPort = ((data[2] & 0xff) << 8) + (data[3] & 0xff);
+		destPort = ((data[2] & 0xff) << 8) | data[3] & 0xff;
 
 		// parse sequence number
 		sequenceNo = (long) (data[4] & 0xff) << 24
@@ -85,27 +64,20 @@ public class TransmissionControlProtocolPacket {
 		dataOffset = (data[12] & 0xff) >> 4;
 
 		nsr = (data[12] & 0b00000001) > 0;
-		cwr = (data[13] & 0b10000000) > 0;
-		ece = (data[13] & 0b01000000) > 0;
-		urg = (data[13] & 0b00100000) > 0;
-		ack = (data[13] & 0b00010000) > 0;
-		psh = (data[13] & 0b00001000) > 0;
-		rst = (data[13] & 0b00000100) > 0;
-		syn = (data[13] & 0b00000010) > 0;
-		fin = (data[13] & 0b00000001) > 0;
+		flags = data[13];
 
 		// NOTE: Sign bit masking for window size? hex could turn into
 		// negative on base 10 i think and that would mess up the window
 		// size. Ask prof.
-		windowSize = ((data[14] & 0xff) << 8) + (data[15] & 0xff);
-		checksum = ((data[16] & 0xff) << 8) + (data[17] & 0xff);
-		urgentPtr = ((data[18] & 0xff) << 8) + (data[19] & 0xff);
+		windowSize = ((data[14] & 0xff) << 8) | data[15] & 0xff;
+		checksum = ((data[16] & 0xff) << 8) | data[17] & 0xff;
+		urgentPtr = ((data[18] & 0xff) << 8) | data[19] & 0xff;
 
 		if ((dataOffset() >> 2) > 5) {
 			options = ((data[20] & 0xff) << 24)
-						+ ((data[21] & 0xff) << 16)
-						+ ((data[22] & 0xff) << 8)
-						+ ((data[23] & 0xff) << 0);
+						| ((data[21] & 0xff) << 16)
+						| ((data[22] & 0xff) << 8)
+						| ((data[23] & 0xff) << 0);
 			payload = Arrays.copyOfRange(data, 24, data.length);
 		} else {
 			payload = Arrays.copyOfRange(data, 20, data.length);
@@ -124,7 +96,50 @@ public class TransmissionControlProtocolPacket {
 		sb.append("TCP: Sequence number = " + sequenceNo() + "\n");
 		sb.append("TCP: Acknowledgement number = " + ackNo() + "\n");
 		sb.append("TCP: Data offset = " + dataOffset() + " bytes\n");
-		sb.append("TCP: Flags = ");
+		sb.append("TCP: Flags = 0x" + String.format("%02x\n", flags()));
+
+		if (urg()) {
+			sb.append("TCP:       ..1. .... = Urgent pointer\n");
+		} else {
+			sb.append("TCP:       ..0. .... = No Urgent pointer\n");
+		}
+
+		if (ack()) {
+			sb.append("TCP:       ...1 .... = Acknowledgement\n");
+		} else {
+			sb.append("TCP:       ...0 .... = No acknowledgement\n");
+		}
+
+		if (psh()) {
+			sb.append("TCP:       .... 1... = Push\n");
+		} else {
+			sb.append("TCP:       .... 0... = No push\n");
+		}
+
+		if (rst()) {
+			sb.append("TCP:       .... .1.. = Reset\n");
+		} else {
+			sb.append("TCP:       .... .0.. = No reset\n");
+		}
+
+		if (syn()) {
+			sb.append("TCP:       .... ..1. = Syn\n");
+		} else {
+			sb.append("TCP:       .... ..0. = No syn\n");
+		}
+
+		if (fin()) {
+			sb.append("TCP:       .... ...1 = Fin\n");
+		} else {
+			sb.append("TCP:       .... ...0 = No fin\n");
+		}
+
+		sb.append("TCP: Window = " + windowSize() + "\n");
+		sb.append("TCP: Checksum = 0x" + String.format("%04x\n", checksum()));
+		sb.append("TCP: Urgent pointer = " + urgentPtr() + "\n");
+
+		// TODO: ask professor if parsing options is necessay
+		sb.append("TCP: No options\n");
 
 		sb.append("TCP:                       \n");
 		sb.append("TCP: Data: (first 64 bytes)\n");
@@ -177,36 +192,40 @@ public class TransmissionControlProtocolPacket {
 		return dataOffset;
 	}
 
+	public byte flags() {
+		return flags;
+	}
+
 	public boolean fin() {
-		return fin;
+		return (flags & 0b00000001) > 0;
 	}
 
 	public boolean syn() {
-		return syn;
+		return (flags & 0b00000010) > 0;
 	}
 
 	public boolean rst() {
-		return rst;
+		return (flags & 0b00000100) > 0;
 	}
 
 	public boolean psh() {
-		return psh;
+		return (flags & 0b00001000) > 0;
 	}
 
 	public boolean ack() {
-		return ack;
+		return (flags & 0b00010000) > 0;
 	}
 
 	public boolean urg() {
-		return urg;
+		return (flags & 0b00100000) > 0;
 	}
 
 	public boolean ece() {
-		return ece;
+		return (flags & 0b01000000) > 0;
 	}
 
 	public boolean cwr() {
-		return cwr;
+		return (flags & 0b10000000) > 0;
 	}
 
 	public boolean nsr() {
