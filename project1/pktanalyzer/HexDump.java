@@ -1,6 +1,22 @@
+/*
+ * HexDump.java
+ *
+ * Version:
+ *     $Id$
+ *
+ * Revisions:
+ *     $Log$
+ */
+
 package pktanalyzer;
 
 import java.util.ArrayList;
+
+/**
+ * This class produces a hexdump of the bytes provided
+ *
+ * @author Tanishq Jain <tj3989@cs.rit.edu>
+ */
 
 public class HexDump {
 	private String[] hexdump;

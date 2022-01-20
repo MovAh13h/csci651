@@ -1,8 +1,25 @@
+/*
+ * InternetProtocolV4Packet.java
+ *
+ * Version:
+ *     $Id$
+ *
+ * Revisions:
+ *     $Log$
+ */
+
 package pktanalyzer;
 
 import java.util.Arrays;
 
-// https://en.wikipedia.org/wiki/IPv4
+/**
+ * This classes a IPv4 packet from the bytes provided.
+ *
+ * Reference: https://en.wikipedia.org/wiki/IPv4
+ *
+ * @author Tanishq Jain <tj3989@cs.rit.edu>
+ */
+
 public class InternetProtocolV4Packet {
 	// version
 	private int version;
@@ -56,8 +73,7 @@ public class InternetProtocolV4Packet {
 		// first half of the byte is the version
 		// second half of the byte is length; & it with 0b00001111 to get the 
 		// last 4 bits (LSB)
-		// TODO: Is sign bit masking necessary here? imo no
-		version = data[0] >> 4; // ok
+		version = data[0] & 0xff >> 4; // ok
 
 		// TODO: is this correct? why does this work? dont understand the math
 		// behind this. Ask professor
@@ -78,10 +94,8 @@ public class InternetProtocolV4Packet {
 		// and >> 4 gets me the correct answer. Why?
 		flags      = (data[6] & 0xff & 0b11100000); // not ok
 
-		// ok
+		// looks good
 		flagOffset = ((data[6] & 0xff & 0b00011111) << 5) | data[7] & 0xff;
-
-		// Note: masking needed here?
 		ttl = data[8] & 0xff;
 		protocol = data[9] & 0xff;
 
@@ -173,7 +187,7 @@ public class InternetProtocolV4Packet {
 		sb.append("IP:       .... .0.. = normal reliability\n");
 		sb.append("IP: Total length = " + totalLength() + " bytes\n");
 		sb.append("IP: Identification = " + identification() + "\n");
-		sb.append("IP: Flags = 0x" + (flags() >> 4) + "\n");
+		sb.append("IP: Flags = 0x" + String.format("%02x\n", (flags() >> 4)));
 		
 		if ((flags() & 0b01000000) == 0b01000000) {
 			sb.append("IP:       .1.. .... = do not fragment\n");

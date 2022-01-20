@@ -1,9 +1,25 @@
+/*
+ * EthernetPacket.java
+ *
+ * Version:
+ *     $Id$
+ *
+ * Revisions:
+ *     $Log$
+ */
+
 package pktanalyzer;
 
 import java.util.Arrays;
 
-// https://en.wikipedia.org/wiki/EtherType
-// https://en.wikipedia.org/wiki/IEEE_802.1Q
+/**
+ * The classes parses a Ethernet packet from the bytes provided.
+ *
+ * Reference: https://en.wikipedia.org/wiki/Ethernet_frame
+ *
+ * @author Tanishq Jain <tj3989@cs.rit.edu>
+ */
+
 public class EthernetPacket {
 	// destination MAC address
 	private String destMac = "";
@@ -94,7 +110,7 @@ public class EthernetPacket {
 
 		sb.append("ETHER: ----- Ether Header -----\n");
 		sb.append("ETHER:\n");
-		sb.append("ETHER: Packet size = " + frameLength + " bytes\n");
+		sb.append("ETHER: Packet size = " + frameLength() + " bytes\n");
 		sb.append("ETHER: Destination = " + destMac() + ",\n");
 		sb.append("ETHER: Source      = " + srcMac() + ",\n");
 		sb.append("ETHER: Ethertype = " + String.format("%04x", et.value())

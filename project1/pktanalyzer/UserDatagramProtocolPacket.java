@@ -1,4 +1,22 @@
+/*
+ * UserDatagramProtocolPacket.java
+ *
+ * Version:
+ *     $Id$
+ *
+ * Revisions:
+ *     $Log$
+ */
+
 package pktanalyzer;
+
+/**
+ * This class parses a UDP packet from the provided bytes.
+ *
+ * Reference: https://en.wikipedia.org/wiki/User_Datagram_Protocol
+ *
+ * @author Tanishq Jain <tj3989@cs.rit.edu>
+ */
 
 public class UserDatagramProtocolPacket {
 	// source port

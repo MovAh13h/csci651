@@ -13,6 +13,8 @@ package pktanalyzer;
 /**
  * The classes parses a ICMP packet from the bytes provided.
  *
+ * Reference: https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol
+ *
  * @author Tanishq Jain <tj3989@cs.rit.edu>
  */
 
@@ -29,7 +31,7 @@ public class InternetControlMessageProtocolPacket {
 	InternetControlMessageProtocolPacket(byte[] data) throws Exception {		
 		type = data[0] & 0xff;
 		code = data[1] & 0xff;
-		checksum = (data[2] & 0xff) << 8 | data[3] & 0xff;	
+		checksum = (data[2] & 0xff) << 8 | data[3] & 0xff;
 	}
 
 	public String toString() {

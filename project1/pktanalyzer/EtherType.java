@@ -1,3 +1,13 @@
+/*
+ * EtherType.java
+ *
+ * Version:
+ *     $Id$
+ *
+ * Revisions:
+ *     $Log$
+ */
+
 package pktanalyzer;
 
 /**

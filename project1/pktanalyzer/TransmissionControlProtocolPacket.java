@@ -1,8 +1,25 @@
+/*
+ * TransmissionControlProtocolPacket.java
+ *
+ * Version:
+ *     $Id$
+ *
+ * Revisions:
+ *     $Log$
+ */
+
 package pktanalyzer;
 
 import java.util.Arrays;
 
-// https://en.wikipedia.org/wiki/Transmission_Control_Protocol
+/**
+ * This classes parses a TCP packet from the give bytes
+ *
+ * Reference: https://en.wikipedia.org/wiki/Transmission_Control_Protocol
+ *
+ * @author Tanishq Jain <tj3989@cs.rit.edu>
+ */
+
 public class TransmissionControlProtocolPacket {
 	// source port
 	private Integer sourcePort;
@@ -74,10 +91,10 @@ public class TransmissionControlProtocolPacket {
 		urgentPtr = ((data[18] & 0xff) << 8) | data[19] & 0xff;
 
 		if ((dataOffset() >> 2) > 5) {
-			options = ((data[20] & 0xff) << 24)
-						| ((data[21] & 0xff) << 16)
-						| ((data[22] & 0xff) << 8)
-						| ((data[23] & 0xff) << 0);
+			options = (data[20] & 0xff) << 24
+						| (data[21] & 0xff) << 16
+						| (data[22] & 0xff) << 8
+						| data[23] & 0xff;
 			payload = Arrays.copyOfRange(data, 24, data.length);
 		} else {
 			payload = Arrays.copyOfRange(data, 20, data.length);
@@ -138,7 +155,7 @@ public class TransmissionControlProtocolPacket {
 		sb.append("TCP: Checksum = 0x" + String.format("%04x\n", checksum()));
 		sb.append("TCP: Urgent pointer = " + urgentPtr() + "\n");
 
-		// TODO: ask professor if parsing options is necessay
+		// TODO: ask professor if parsing options is necessary
 		sb.append("TCP: No options\n");
 
 		sb.append("TCP:                       \n");
