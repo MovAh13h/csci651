@@ -48,7 +48,7 @@ public class pktanalyzer {
 			System.out.print(epp);
 
 			// check if its an IP
-			if (epp.ethertypeLabel() == "IP") { 
+			if (epp.ethertypeLabel() == "IP") {
 				// run ipv4 packet parser
 				InternetProtocolV4Packet ippp
 					= new InternetProtocolV4Packet(epp.payload());
@@ -82,7 +82,7 @@ public class pktanalyzer {
 					System.out.println(icmpp);
 				} else {
 					// unhandled packet
-					System.out.println("Unhandled Data type inside IPv4");
+					System.out.println("*** Unhandled Packet type inside IPv4 ***");
 				}
 			}
 		} catch (Exception e) {

@@ -37,6 +37,9 @@ public class EthernetPacket {
 	private byte[] payload;
 
 	EthernetPacket(byte[] data) throws Exception {
+		// Prof. said String.format is ok if used for pretty printing. just
+		// not for pasring.
+		
 		// parse dest mac address
 		for (int i = 0; i < 6; i++) {
 			if (i < 5) {
@@ -55,25 +58,15 @@ public class EthernetPacket {
 			}
 		}
 
-		// check if the 17-18th bytes are 0x8100 for VTAG
-		int value = 0, length = 0;
-		value = data[16] & 0xff;
-		value = (value << 8) | data[17] & 0xff;
+		int value = (data[12] & 0xff) << 8 | data[13] & 0xff;
 
 		if (value != 0x8100) {
 			// VTAG is not present
-			// if VTAG is not present
-			// bytes 12-13 are the EtherType/Size followed by the payload
-			length = data[12] & 0xff;
-			length = (length << 8) | (data[13] & 0xff);
+			et = new EtherType(value);
 		} else {
 			// VTAG is present
-			// if VTAG is present, bytes 12-15 are the VTAG data and byte 16-17
-			// are 0x8100
-			length = value;
+			et = new EtherType((data[16] & 0xff) << 8 | data[17] & 0xff);
 		}
-		
-		et = new EtherType(length);
 		
 		frameLength = data.length;
 
@@ -81,11 +74,6 @@ public class EthernetPacket {
 		// 1) Checksum
 		// 2) Exact payload size by frameLength - (7/13 + 4) depending upon vtag
 		//    present or no
-		//    
-		// Note: This class might get turned into a package of its own later on
-		// and hence I want objects of this class to be independent and not
-		// rely on any form of outside data after the constructor is run. Hence,
-		// internal copy of the payload is made.
 		if (vlan()) {
 			payload = Arrays.copyOfRange(data, 18, data.length);
 		} else {

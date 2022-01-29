@@ -9,5 +9,5 @@ Supercool Packet analyzer
 - [X] InternetControlMessageProtocolPacket.java
 - [X] InternetProtocolV4Packet.java
 - [X] pktanalyzer.java
-- [X] TransmissionControlProtocolPacket.java
+- [] TransmissionControlProtocolPacket.java
 - [X] UserDatagramProtocolPacket.java

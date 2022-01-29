@@ -10,6 +10,8 @@
 
 package pktanalyzer;
 
+import java.util.Arrays;
+
 /**
  * This class parses a UDP packet from the provided bytes.
  *
@@ -47,8 +49,10 @@ public class UserDatagramProtocolPacket {
 		// parse checksum
 		checksum = ((data[6] & 0xff) << 8) | data[7] & 0xff;
 
-		// get the hex dump of this packet
-		hd = new HexDump(data);
+		// get the hex dump of the data
+		// the header of UDP is 8 bytes and hence we start with 9th byte
+		// hd = new HexDump(data);
+		hd = new HexDump(Arrays.copyOfRange(data, 8, data.length));
 	}
 
 	public String toString() {

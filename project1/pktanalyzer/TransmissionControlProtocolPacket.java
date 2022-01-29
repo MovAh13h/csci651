@@ -51,9 +51,6 @@ public class TransmissionControlProtocolPacket {
 	// urgent pointer
 	private Integer urgentPtr;
 
-	// options (optional)
-	private Integer options;
-
 	// payload
 	private byte[] payload;
 
@@ -67,12 +64,19 @@ public class TransmissionControlProtocolPacket {
 		// parse dest port
 		destPort = ((data[2] & 0xff) << 8) | data[3] & 0xff;
 
+		// sequenceNo and ackNo have to be long because both have total of 32
+		// bits of information. if either one of them has a 1 on the MSB bit
+		// and got converted to a int(32 bit) then java would take the MSB bit
+		// as a sign bit and display some negative number. That wouldnt be the
+		// case for a long where theres extra bits upfront
+
 		// parse sequence number
 		sequenceNo = (long) (data[4] & 0xff) << 24
 						| (data[5] & 0xff) << 16
 						| (data[6] & 0xff) << 8
 						| (data[7] & 0xff) << 0;
 
+		// parse ack no
 		ackNo = (long) (data[8] & 0xff) << 24
 					| (data[9] & 0xff) << 16
 					| (data[10] & 0xff) << 8
@@ -81,26 +85,19 @@ public class TransmissionControlProtocolPacket {
 		dataOffset = (data[12] & 0xff) >> 4;
 
 		nsr = (data[12] & 0b00000001) > 0;
-		flags = data[13];
+		flags = (byte) (data[13] & 0xff);
 
-		// NOTE: Sign bit masking for window size? hex could turn into
-		// negative on base 10 i think and that would mess up the window
-		// size. Ask prof.
 		windowSize = ((data[14] & 0xff) << 8) | data[15] & 0xff;
 		checksum = ((data[16] & 0xff) << 8) | data[17] & 0xff;
 		urgentPtr = ((data[18] & 0xff) << 8) | data[19] & 0xff;
 
-		if ((dataOffset() >> 2) > 5) {
-			options = (data[20] & 0xff) << 24
-						| (data[21] & 0xff) << 16
-						| (data[22] & 0xff) << 8
-						| data[23] & 0xff;
-			payload = Arrays.copyOfRange(data, 24, data.length);
+		if ((dataOffset() << 2) > 5) {
+			payload = Arrays.copyOfRange(data, (dataOffset() << 2), data.length);
 		} else {
 			payload = Arrays.copyOfRange(data, 20, data.length);
 		}
 
-		hd = new HexDump(data);
+		hd = new HexDump(payload);
 	}
 
 	public String toString() {
@@ -113,6 +110,7 @@ public class TransmissionControlProtocolPacket {
 		sb.append("TCP: Sequence number = " + sequenceNo() + "\n");
 		sb.append("TCP: Acknowledgement number = " + ackNo() + "\n");
 		sb.append("TCP: Data offset = " + dataOffset() + " bytes\n");
+		sb.append("TCP: Header Length = " + (dataOffset() << 2) + " bytes\n");
 		sb.append("TCP: Flags = 0x" + String.format("%02x\n", flags()));
 
 		if (urg()) {
@@ -155,8 +153,13 @@ public class TransmissionControlProtocolPacket {
 		sb.append("TCP: Checksum = 0x" + String.format("%04x\n", checksum()));
 		sb.append("TCP: Urgent pointer = " + urgentPtr() + "\n");
 
-		// TODO: ask professor if parsing options is necessary
-		sb.append("TCP: No options\n");
+		if (dataOffset() > 5) {
+			// option present
+			sb.append("TCP: Options present\n");
+		} else {
+			// options not present
+			sb.append("TCP: No options\n");
+		}
 
 		sb.append("TCP:                       \n");
 		sb.append("TCP: Data: (first 64 bytes)\n");
@@ -171,10 +174,6 @@ public class TransmissionControlProtocolPacket {
 
 	public byte[] payload() {
 		return Arrays.copyOfRange(payload, 0, payload.length);
-	}
-
-	public int options() {
-		return options;
 	}
 
 	public int urgentPtr() {
