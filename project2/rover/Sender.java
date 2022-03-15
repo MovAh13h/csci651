@@ -18,6 +18,7 @@ class Sender implements Runnable {
 			InetAddress group = InetAddress.getByName(multicastIP);
 
 			Table t = this.rover.getTable();
+
 			// TODO: Convert table to RIP Packet here
 			//       and send that rip packet over the socket
 			Packet p = new Packet(t, this.rover.getRoverID());
@@ -34,7 +35,7 @@ class Sender implements Runnable {
 			byte[] merger = new byte[lb.length + pbytes.length];
 
 			for (int i = 0; i < 4; i++) merger[i] = lb[i];
-			for (int i = 4; i < pbytes.length + 4; i++) merger[i] = pbytes[i];
+			for (int i = 4; i < pbytes.length + 4; i++) merger[i] = pbytes[i - 4];
 
 			DatagramPacket packet = new DatagramPacket(merger, merger.length, group, this.rover.getPort());
 			// byte[] bb = new byte[] {this.rover.getRoverID()};

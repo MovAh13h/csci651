@@ -1,7 +1,3 @@
-import java.net.*; 
-import java.io.*; 
-import java.util.*;
-
 import rover.Rover;
 
 import java.net.InetAddress; 
@@ -23,11 +19,14 @@ class Main {
 		byte id = Byte.parseByte(args[0]);
 		String multicastIP = args[1];
 		int portNum = Integer.parseInt(args[2]);
-
-		Rover r = new Rover(id, multicastIP, portNum);
-
-		r.start();
-
+		try {
+			Rover r = new Rover(id, multicastIP, portNum);
+			r.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
 		// 	if (args.length>0) {
 
 		// 	// Get the node number (first arg)

@@ -1,5 +1,8 @@
 package rover;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 public class Rover extends Thread {
 	private byte id; // unique 8 bit number for Rover
 	private String multicastIP;
@@ -8,11 +11,15 @@ public class Rover extends Thread {
 	private Thread sender;
 	private Thread client;
 
-	public Rover(byte id, String multicastIP, int port) {
+	public Rover(byte id, String multicastIP, int port) throws UnknownHostException {
 		this.id = id;
 		this.multicastIP = multicastIP;
 		this.port = port;
 		table = new Table(this.id);
+		InetAddress self = InetAddress.getByName("10.0." + id + ".0");
+		InetAddress subnet = InetAddress.getByName("255.255.255.0");
+		InetAddress gateway = InetAddress.getByName("127.0.0.1");
+		table.add(new RoutingEntry(self, subnet, gateway, 0));
 	}
 	
 	public byte getRoverID() {

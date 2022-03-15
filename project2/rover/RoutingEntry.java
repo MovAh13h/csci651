@@ -1,7 +1,6 @@
 package rover;
 
 import java.net.*;
-import java.util.Arrays;
 
 public class RoutingEntry {
     public static int INFINITY = 16;
@@ -76,9 +75,9 @@ public class RoutingEntry {
         StringBuilder sb = new StringBuilder();
 
         sb.append("RoutingEntry(");
-        sb.append(getDestination() + "|");
-        sb.append(getSubnet() + "|");
-        sb.append(getGateway() + "|");
+        sb.append(getDestination().getHostAddress() + "|");
+        sb.append(getSubnet().getHostAddress() + "|");
+        sb.append(getGateway().getHostAddress() + "|");
         sb.append(getMetric() + ")\n");
 
         return sb.toString();
@@ -103,13 +102,10 @@ public class RoutingEntry {
                 (byte) metric
         };
 
-        for (int j = 0; j < 4; j++) {
-            b[i + 4] = destB[j];
-            b[i + 8] = subnetB[j];
-            b[i + 12] = nextHopB[j];
-            b[i + 16] = metricB[j];
-            i++;
-        }
+        for (int j = 0; j < 4; j++) b[i++] = destB[j];
+        for (int j = 0; j < 4; j++) b[i++] = subnetB[j];
+        for (int j = 0; j < 4; j++) b[i++] = nextHopB[j];
+        for (int j = 0; j < 4; j++) b[i++] = metricB[j];
 
         return b;
     }

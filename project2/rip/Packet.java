@@ -1,6 +1,5 @@
 package rip;
 
-import java.io.*;
 import java.util.*;
 
 import rover.RoutingEntry;
@@ -15,7 +14,6 @@ class Entry {
 	private byte[] nextHop;
 	private byte[] metric;
 
-	// TODO: useless?
 	public Entry(byte[] data) throws ArrayIndexOutOfBoundsException {
 		addrFamIdnt = new byte[] {data[0], data[1]};
 		routeTag = new byte[] {data[2], data[3]};

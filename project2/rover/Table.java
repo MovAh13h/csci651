@@ -1,7 +1,6 @@
 package rover;
 
 import java.util.*;
-import java.net.InetAddress;
 
 // Ref: https://en.wikipedia.org/wiki/Routing_table
 
@@ -27,5 +26,17 @@ public class Table {
 
 	public Iterator<RoutingEntry> iter() {
 		return this.table.iterator();
+	}
+
+	public void add(RoutingEntry re) {
+		this.table.add(re);
+	}
+
+	public byte getID() {
+		return id;
+	}
+
+	public int size() {
+		return table.size();
 	}
 }
