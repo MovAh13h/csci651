@@ -14,7 +14,7 @@ WORKDIR /app
 RUN javac *.java
 
 # Set our bash script to run on startup
-ENTRYPOINT ["sh","./app/run/run.sh"]
+ENTRYPOINT ["sh", "./run/run.sh"]
 CMD []
 
 # If you want to manually run commands within the container,

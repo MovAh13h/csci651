@@ -7,6 +7,7 @@ import rip.Packet;
 
 class Sender implements Runnable {
 	private Rover rover;
+	private boolean cleanUp = true;
 
 	public Sender(Rover r) {
 		this.rover = r;
@@ -19,27 +20,11 @@ class Sender implements Runnable {
 
 			Table t = this.rover.getTable();
 
-			// TODO: Convert table to RIP Packet here
-			//       and send that rip packet over the socket
-			Packet p = new Packet(t, this.rover.getRoverID());
+			Packet p = new Packet(t, (byte)2);
 			byte[] pbytes = p.getBytes();
 			
-			// how many bytes of data exists?
-			byte[] lb = new byte[] {
-				(byte) (pbytes.length >>> 24),
-				(byte) (pbytes.length >>> 16),
-				(byte) (pbytes.length >>> 8),
-				(byte) (pbytes.length >>> 0),
-			};
-
-			byte[] merger = new byte[lb.length + pbytes.length];
-
-			for (int i = 0; i < 4; i++) merger[i] = lb[i];
-			for (int i = 4; i < pbytes.length + 4; i++) merger[i] = pbytes[i - 4];
-
-			DatagramPacket packet = new DatagramPacket(merger, merger.length, group, this.rover.getPort());
-			// byte[] bb = new byte[] {this.rover.getRoverID()};
-			// DatagramPacket packet = new DatagramPacket(bb, bb.length, group, this.rover.getPort());
+			DatagramPacket packet = new DatagramPacket(pbytes, pbytes.length, group, this.rover.getPort());
+			
 			socket.send(packet);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -51,7 +36,13 @@ class Sender implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				System.out.println("[SEND] Sending");
+				cleanUp = !cleanUp;
+
+				// every 10 seconds clean up
+				if (cleanUp) {
+					this.rover.cleanRouteTable();
+				}
+
 				this.startSend();
 				// Send routing table every 5 seconds
 				Thread.sleep(5000);

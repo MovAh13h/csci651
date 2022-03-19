@@ -15,8 +15,9 @@ public class Table {
 		this.table = new Vector<>();
 	}
 
-	public Table(byte id, byte[] data) {
-		this(id);
+	public Table(byte[] data) {
+		this.table = new Vector<>();
+		
 		for (int i = 0; i < data.length / 20; i++) {
 			byte[] ripEntryData = Arrays.copyOfRange(data, i * 20, i * 20 + 20);
 			RoutingEntry re = new RoutingEntry(ripEntryData);

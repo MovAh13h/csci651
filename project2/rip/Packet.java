@@ -76,10 +76,10 @@ public class Packet {
 		}
 	}
 
-	public Packet(Table t, byte id) {
-		this.command = 0b00000010; // 2
+	public Packet(Table t, byte command) {
+		this.command = command; // 2
 		this.version = 0b00000010; // 2
-		this.routingDomain = new byte[] {0, id};
+		this.routingDomain = new byte[] {0, 0};
 		this.entries = new HashMap<>();
 
 		Iterator<RoutingEntry> it = t.iter();
