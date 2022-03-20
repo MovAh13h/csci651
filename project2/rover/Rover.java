@@ -23,6 +23,7 @@ public class Rover extends Thread {
 		InetAddress subnet = InetAddress.getByName("255.255.255.0");
 		InetAddress gateway = InetAddress.getByName("127.0.0.1");
 		table.add(new RoutingEntry(selfIp, subnet, gateway, 0));
+		System.out.println(table);
 	}
 	
 	public byte getRoverID() {
@@ -46,7 +47,7 @@ public class Rover extends Thread {
 		InetAddress s1 = r.getSubnet();
 		InetAddress g1 = r.getGateway();
 		int metric = r.getMetric() + 1;
-		metric = metric > RoutingEntry.INFINITY ? RoutingEntry.INFINITY : metric;
+		metric = metric >= RoutingEntry.INFINITY ? RoutingEntry.INFINITY : metric;
 
 		// nothing in table, add it directly
 		if (table.size() == 0) {

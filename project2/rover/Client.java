@@ -28,13 +28,15 @@ class Client implements Runnable {
 				byte[] arr = Arrays.copyOfRange(packet.getData(), packet.getOffset(), packet.getLength());
 
 				byte command = arr[0];
+				InetAddress addr = packet.getAddress();
+				System.out.println(addr.getHostAddress() + " " + InetAddress.getLocalHost());
 				// byte version = arr[1];				
 				// byte[] routingDomain = new byte[] {arr[2], arr[3]};
 
 				if (command == 0b00000001) {
 					Sender s = new Sender(rover);
 					s.startSend();
-				} else if (command == 0b00000010) {
+				} else if (command == 0b00000010 && !addr.equals(InetAddress.getLocalHost())) {
 					Table t = new Table(Arrays.copyOfRange(arr, 4, arr.length));
 
 					Iterator<RoutingEntry> it = t.iter();
