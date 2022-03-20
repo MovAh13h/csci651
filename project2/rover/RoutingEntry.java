@@ -135,6 +135,6 @@ public class RoutingEntry {
 
         RoutingEntry ss = (RoutingEntry) s;
 
-        return getDestination() == ss.getDestination() && getSubnet() == ss.getSubnet();
+        return getDestination().equals(ss.getDestination()) && getSubnet().equals(ss.getSubnet());
     }
 }

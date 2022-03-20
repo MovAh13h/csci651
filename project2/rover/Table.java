@@ -40,4 +40,22 @@ public class Table {
 	public int size() {
 		return table.size();
 	}
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Address\t\tNextHop\tCost\n");
+
+		Iterator<RoutingEntry> it = iter();
+
+		while (it.hasNext()) {
+			RoutingEntry re = it.next();
+
+			sb.append(re.getDestination().getHostAddress() + "/24\t");
+			sb.append(re.getGateway().getHostAddress() + "\t");
+			sb.append(re.getMetric() + "\n");
+		}
+
+		return sb.toString();
+	}
 }

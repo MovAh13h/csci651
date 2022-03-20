@@ -52,6 +52,7 @@ public class Rover extends Thread {
 		if (table.size() == 0) {
 			r.setMetric(metric);
 			r.setLocalTime(LocalTime.now());
+			table.add(r);
 			System.out.println(table);
 		} else {
 			boolean added = false;
@@ -76,6 +77,8 @@ public class Rover extends Thread {
 						re.setLocalTime(LocalTime.now());
 						System.out.println(table);
 					}
+
+					added = true;
 				}
 			}
 
