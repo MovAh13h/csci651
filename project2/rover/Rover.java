@@ -19,13 +19,17 @@ public class Rover extends Thread {
 		this.multicastIP = multicastIP;
 		this.port = port;
 		table = new Table(this.id);
-		InetAddress selfIp = InetAddress.getByName("10.0." + id + ".0");
+		selfIp = InetAddress.getByName("10.0." + id + ".0");
 		InetAddress subnet = InetAddress.getByName("255.255.255.0");
 		InetAddress gateway = InetAddress.getByName("127.0.0.1");
 		table.add(new RoutingEntry(selfIp, subnet, gateway, 0));
 		System.out.println(table);
 	}
 	
+	public InetAddress getNetworkIp() {
+		return selfIp;
+	}
+
 	public byte getRoverID() {
 		return this.id;
 	}
@@ -64,6 +68,7 @@ public class Rover extends Thread {
 
 				if (r.equals(re)) {
 					added = true;
+					// just a normal update
 					if (metric == 1) {
 						re.setLocalTime(LocalTime.now());
 					}
@@ -98,20 +103,21 @@ public class Rover extends Thread {
 		while (it.hasNext()) {
 			RoutingEntry re = it.next();
 
-			if (re.getLocalTime().plusSeconds(10).compareTo(LocalTime.now()) < 0) {
+			if (re.getLocalTime().plusSeconds(10).compareTo(LocalTime.now()) < 0 && !re.getDestination().equals(selfIp) && re.getMetric() != RoutingEntry.INFINITY) {
 				re.setMetric(RoutingEntry.INFINITY);
 				re.setLocalTime(LocalTime.now());
-
 				Iterator<RoutingEntry> itt = table.iter();
 
 				while (itt.hasNext()) {
 					RoutingEntry rr = itt.next();
 
-					if (rr.getGateway().equals(re.getGateway())) {
+					if (rr.getGateway().equals(re.getDestination())) {
 						rr.setMetric(RoutingEntry.INFINITY);
 						rr.setLocalTime(LocalTime.now());
 					}
 				}
+
+				System.out.println(table);
 			}
 		}
 	}
