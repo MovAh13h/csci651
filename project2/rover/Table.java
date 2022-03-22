@@ -3,18 +3,17 @@ package rover;
 import java.util.*;
 
 // Ref: https://en.wikipedia.org/wiki/Routing_table
-
 public class Table {
-	private byte id;
-	// Is a Key val map needed? can i just loop through it?
-	// private HashMap<Byte, RoutingEntry> table;
-	private Vector<RoutingEntry> table;
+	private byte id; // rover id
+	private Vector<RoutingEntry> table; // routing table
 
+	// Constructor
 	public Table(byte id) {
 		this.id = id;
 		this.table = new Vector<>();
 	}
 
+	// Constructor
 	public Table(byte[] data) {
 		this.table = new Vector<>();
 		
@@ -25,22 +24,27 @@ public class Table {
 		}
 	}
 
+	// Iterator over the entries of the table
 	public Iterator<RoutingEntry> iter() {
 		return this.table.iterator();
 	}
 
+	// Add new entry to the table
 	public void add(RoutingEntry re) {
 		this.table.add(re);
 	}
 
+	// ID associated to the Rover
 	public byte getID() {
 		return id;
 	}
 
+	// Number of entries in table
 	public int size() {
 		return table.size();
 	}
 
+	// String representation of Table
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 

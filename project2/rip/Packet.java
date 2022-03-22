@@ -14,6 +14,7 @@ class Entry {
 	private byte[] nextHop;
 	private byte[] metric;
 
+	// Constructor
 	public Entry(byte[] data) throws ArrayIndexOutOfBoundsException {
 		addrFamIdnt = new byte[] {data[0], data[1]};
 		routeTag = new byte[] {data[2], data[3]};
@@ -23,6 +24,7 @@ class Entry {
 		metric = new byte[] {data[16], data[17], data[18], data[19]};
  	}
 
+ 	// Convert RIP IP entry to bytes
  	public byte[] getBytes() {
  		byte[] b = new byte[20];
 
@@ -42,14 +44,9 @@ class Entry {
  		return b;
  	}
 
+ 	// Returns IP contained in the entry
  	public String getIP() {
  		return ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3];
- 	}
-
- 	public String toString() {
- 		StringBuilder sb = new StringBuilder();
- 		// TODO: if needed
- 		return sb.toString();
  	}
 }
 
@@ -59,6 +56,7 @@ public class Packet {
 	private byte[] routingDomain;
 	private HashMap<String, Entry> entries;
 
+	// Constructor
 	public Packet(byte[] data) throws ArrayIndexOutOfBoundsException {
 		this.command = data[0];
 		this.version = data[1];
@@ -76,6 +74,7 @@ public class Packet {
 		}
 	}
 
+	// Constructor
 	public Packet(Table t, byte command) {
 		this.command = command; // 2
 		this.version = 0b00000010; // 2
@@ -96,21 +95,25 @@ public class Packet {
 		}
 	}
 
+	// Command
 	public byte getCommand() {
 		return this.command;
 	}
 
+	// Version
 	public byte getVersion() {
 		return this.version;
 	}
 
+	// routing domain
 	public byte[] getRoutingDomain() {
 		return Arrays.copyOf(this.routingDomain, this.routingDomain.length);
 	}
 
+	// Converts RIPv2 Packet to bytes
 	public byte[] getBytes() {
 		int i = 0;
-		byte[] b = new byte[(entries.size() * 20) + 4];
+		byte[] b = new byte[(entries.size() * 20) + 4]; // rip entries + 4 bytes
 
 		b[i++] = command;
 		b[i++] = version;

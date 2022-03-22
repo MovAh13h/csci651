@@ -68,7 +68,7 @@ public class Rover extends Thread {
 
 				if (r.equals(re)) {
 					added = true;
-					// just a normal update
+					// just a normal timely update
 					if (metric == 1) {
 						re.setLocalTime(LocalTime.now());
 					}

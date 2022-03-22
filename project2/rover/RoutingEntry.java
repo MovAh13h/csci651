@@ -112,10 +112,10 @@ public class RoutingEntry {
         byte[] subnetB = subnet.getAddress();
         byte[] nextHopB = gateway.getAddress();
         byte[] metricB = new byte[] {
-                (byte) (metric >>> 24),
-                (byte) (metric >>> 16),
-                (byte) (metric >>> 8),
-                (byte) metric
+            (byte) (metric >>> 24),
+            (byte) (metric >>> 16),
+            (byte) (metric >>> 8),
+            (byte) metric
         };
 
         for (int j = 0; j < 4; j++) b[i++] = destB[j];
