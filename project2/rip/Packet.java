@@ -81,17 +81,19 @@ public class Packet {
 		this.routingDomain = new byte[] {0, 0};
 		this.entries = new HashMap<>();
 
-		Iterator<RoutingEntry> it = t.iter();
+		synchronized (t) {
+			Iterator<RoutingEntry> it = t.iter();
 
-		while (it.hasNext()) {
-			RoutingEntry re = it.next();
-			try {
-				Entry e = new Entry(re.toRIPEntry());
-				this.entries.put(e.getIP(), e);
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
+			while (it.hasNext()) {
+				RoutingEntry re = it.next();
+				try {
+					Entry e = new Entry(re.toRIPEntry());
+					this.entries.put(e.getIP(), e);
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}	
 		}
 	}
 

@@ -1,5 +1,6 @@
 package rover;
 
+import java.time.LocalTime;
 import java.util.*;
 
 // Ref: https://en.wikipedia.org/wiki/Routing_table
@@ -47,8 +48,8 @@ public class Table {
 	// String representation of Table
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
-		sb.append("Address\t\tNextHop\t\tCost\n");
+		sb.append(LocalTime.now());
+		sb.append("\nAddress\t\tNextHop\t\tCost\n");
 
 		Iterator<RoutingEntry> it = iter();
 

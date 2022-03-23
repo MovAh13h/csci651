@@ -32,19 +32,22 @@ class Client implements Runnable {
 				// byte[] routingDomain = new byte[] {arr[2], arr[3]};
 
 				if (command == 0b00000001) {
+					// triggered updates
 					Sender s = new Sender(rover);
 					s.startSend();
 				} else if (command == 0b00000010) {
 					Table t = new Table(Arrays.copyOfRange(arr, 4, arr.length));
 
-					Iterator<RoutingEntry> it = t.iter();
+					synchronized (t) {
+						Iterator<RoutingEntry> it = t.iter();
 
-					while (it.hasNext()) {
-						RoutingEntry re = it.next();
+						while (it.hasNext()) {
+							RoutingEntry re = it.next();
 
-						if (!re.getDestination().equals(this.rover.getNetworkIp())) {
-							this.rover.updateTable(re, packet.getAddress());
-						}
+							if (!re.getDestination().equals(this.rover.getNetworkIp())) {
+								this.rover.updateTable(re, packet.getAddress());
+							}
+						}	
 					}
 				}
 			} catch (IOException e) {
