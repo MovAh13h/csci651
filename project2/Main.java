@@ -1,11 +1,5 @@
 import rover.Rover;
 
-// Main.java
-// (C) 2019 Sam Fryer
-//
-// Starts the UdpMulticastClient and the UdpMulticastSender threads
-// and then just sits and waits forever.
-
 class Main {
 	public static void main(String args[]) {
 		if (args.length < 3) {

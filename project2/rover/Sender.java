@@ -1,31 +1,26 @@
 package rover;
 
-import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
-import rip.Packet;
-
-class Sender implements Runnable {
-	private Rover rover;
+public class Sender extends Thread {
+	private Rover r;
 	private boolean cleanUp = true;
 
 	public Sender(Rover r) {
-		this.rover = r;
+		this.r = r;
 	}
 
-	public void startSend() throws IOException {
-		try (DatagramSocket socket = new DatagramSocket()) {
-			String multicastIP = this.rover.getMulticastIP();
-			InetAddress group = InetAddress.getByName(multicastIP);
+	public void send() throws Exception {
+		try (DatagramSocket s = new DatagramSocket()) {
+			InetAddress g = InetAddress.getByName(this.r.multicastIP);
 
-			Table t = this.rover.getTable();
-
-			Packet p = new Packet(t, (byte)2);
+			Packet p = new Packet(this.r.table, (byte) 2);
 			byte[] pbytes = p.getBytes();
-			
-			DatagramPacket packet = new DatagramPacket(pbytes, pbytes.length, group, this.rover.getPort());
-			
-			socket.send(packet);
+
+			DatagramPacket packet = new DatagramPacket(pbytes, pbytes.length, g, this.r.port);
+			s.send(packet);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -38,16 +33,17 @@ class Sender implements Runnable {
 			try {
 				cleanUp = !cleanUp;
 
-				// every 10 seconds clean up
+				// every 10 seconds
 				if (cleanUp) {
-					this.rover.cleanRouteTable();
+					this.r.cleanUpTable();
 				}
 
-				this.startSend();
-				// Send routing table every 5 seconds
+				this.send();
+
 				Thread.sleep(5000);
 			} catch (Exception e) {
 				e.printStackTrace();
+				System.exit(1);
 			}
 		}
 	}
