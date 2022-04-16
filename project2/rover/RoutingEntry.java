@@ -10,17 +10,38 @@ public class RoutingEntry {
 	public int cost;
 	public LocalTime time;
 
-	public RoutingEntry(InetAddress nextHop, InetAddress subnet, int cost) {
+	public RoutingEntry(InetAddress ip, InetAddress nextHop, InetAddress subnet, int cost) {
 		this.nextHop = nextHop;
 		this.subnet = subnet;
 		this.cost = cost;
 		this.time = LocalTime.now();
 	}
 
-	public RoutingEntry(InetAddress nextHop, InetAddress subnet, int cost, LocalTime t) {
-		this(nextHop, subnet, cost);
+	public RoutingEntry(InetAddress ip, InetAddress nextHop, InetAddress subnet, int cost, LocalTime t) {
+		this(ip, nextHop, subnet, cost);
 		this.time = t;
 	}
+
+    public RoutingEntry(byte[] data) {
+        int i = 0;
+        i++; // addrFamInt 1
+        i++; // addrFamInt 2
+        i++; // route tag 1
+        i++; // route tag 2
+        try {
+            byte[] ipB = new byte[] {data[i++], data[i++], data[i++], data[i++]};
+            byte[] subnetB = new byte[] {data[i++], data[i++], data[i++], data[i++]};
+            byte[] nextHopB = new byte[] {data[i++], data[i++], data[i++], data[i++]};
+            cost = data[i++] << 24 | data[i++] << 16 | data[i++] << 8 | data[i++];
+
+            ip = InetAddress.getByAddress(ipB);
+            subnet = InetAddress.getByAddress(subnetB);
+            nextHop = InetAddress.getByAddress(nextHopB);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
 
 	public byte[] toRIPEntry() {
         byte[] b = new byte[20];

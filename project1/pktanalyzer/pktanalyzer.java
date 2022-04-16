@@ -40,7 +40,7 @@ public class pktanalyzer {
 		try {
 			// read file as bytes
 			byte[] packet_data = Files.readAllBytes(packet_file.toPath());
-			 
+			System.out.println(packet_data[0]);
 			// run the ethernet packet parser
 			EthernetPacket epp = new EthernetPacket(packet_data);
 

@@ -15,7 +15,7 @@ public class Sender extends Thread {
 	public void send() throws Exception {
 		try (DatagramSocket s = new DatagramSocket()) {
 			InetAddress g = InetAddress.getByName(this.r.multicastIP);
-
+			System.out.println(this.r.table);
 			Packet p = new Packet(this.r.table, (byte) 2);
 			byte[] pbytes = p.getBytes();
 
@@ -35,7 +35,7 @@ public class Sender extends Thread {
 
 				// every 10 seconds
 				if (cleanUp) {
-					this.r.cleanUpTable();
+					this.r.table.cleanUpTable();
 				}
 
 				this.send();

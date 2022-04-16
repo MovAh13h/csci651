@@ -14,7 +14,7 @@ class Main {
 			Rover r = new Rover(id, multicastIP, portNum);
 
 			// start the rover brrrr
-			r.start();
+			r.run();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);

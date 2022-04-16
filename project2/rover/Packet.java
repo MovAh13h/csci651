@@ -49,10 +49,10 @@ class Entry {
 }
 
 public class Packet {
-	byte command;
-	byte version;
-	byte[] routingDomain;
-	HashMap<String, Entry> entries;
+	public byte command;
+	public byte version;
+	public byte[] routingDomain;
+	public HashMap<String, Entry> entries;
 
 	public Packet(byte[] data) throws ArrayIndexOutOfBoundsException {
 		this.command = data[0];
@@ -77,20 +77,38 @@ public class Packet {
 		this.routingDomain = new byte[] {0, 0};
 		this.entries = new HashMap<>();
 
-		for (Map.Entry<InetAddress, RoutingEntry> e : t.t.entrySet()) {
-			RoutingEntry re = (RoutingEntry) e.getValue();
+		System.out.println(t);
 
+		for (Map.Entry<InetAddress, RoutingEntry> e : t.t.entrySet()) {
+			RoutingEntry re = e.getValue();
+			
 			try {
-				Entry e = new Entry(re.toRIPEntry());
-				this.entries.put(e.getIP(), e);
-			} catch (Exception e) {
-				e.printStackTrace();
+				Entry entry = new Entry(re.toRIPEntry());
+				this.entries.put(entry.getIP(), entry);
+			} catch (Exception f) {
+				f.printStackTrace();
 				System.exit(1);
 			}
 		}
 	}
 
 	public byte[] getBytes() {
-		return new byte[] {};
+		int i = 0;
+		byte[] b = new byte[(entries.size() * 20) + 4];
+
+		b[i++] = command;
+		b[i++] = version;
+		b[i++] = routingDomain[0];
+		b[i++] = routingDomain[1];
+
+		for (Entry e : entries.values()) {
+			byte[] bb = e.getBytes();
+
+			for (int j = 0; j < 20; j++) {
+				b[i++] = bb[j];
+			}
+		}
+
+		return b;
 	}
 }

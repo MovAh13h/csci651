@@ -1,17 +1,2 @@
 Running: iptables -A INPUT -i eth0 -m statistic --mode random --probability 0.2 -j DROP
 
-19:55:14.760587
-Address		NextHop		Cost
-10.0.2.0/24	127.0.0.1	0
-
-19:55:19.705023
-Address		NextHop		Cost
-10.0.2.0/24	127.0.0.1	0
-10.0.1.0/24	172.18.0.21	1
-
-19:55:19.810633
-Address		NextHop		Cost
-10.0.2.0/24	127.0.0.1	0
-10.0.1.0/24	172.18.0.21	1
-10.0.3.0/24	172.18.0.23	1
-
